@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "vectorquant"
+version = "0.5.0"
+description = "High-performance quantitative finance engine for Python"
+authors = [
+  { name = "Sahil Gupta", email = "linkedin.sahil.gupta07@gmail.com" }
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+keywords = ["quant", "finance", "portfolio", "risk", "monte-carlo", "stochastic"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Office/Business :: Financial",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+# Zero external dependencies — pure Python math kernel
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-cov"]
+perf = ["numba>=0.58"]
+gpu = ["cupy-cuda12x>=12.0.0"]
+
+[tool.setuptools.packages.find]
+include = ["vectorquant*"]
+exclude = ["tests*", "benchmarks*", "examples*", "quant_engine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
