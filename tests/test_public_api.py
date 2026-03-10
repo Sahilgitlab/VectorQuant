@@ -16,7 +16,7 @@ import vectorquant as vq
 
 def test_version():
     assert hasattr(vq, "__version__")
-    assert vq.__version__ == "0.5.0"
+    assert vq.__version__ == "0.5.1"
 
 
 def test_linalg_namespace():
