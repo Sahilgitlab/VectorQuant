@@ -47,3 +47,54 @@ from .reasoning import ReasoningEngine, ReasoningResult
 from .llm import LLMInterface
 
 from .pipeline import HallucinationProofPipeline, PipelineResult
+
+# Phase 9.1: Agent Protocol
+from .agent_interface import (
+    VectorQuantTool, ComputationResult, ParameterValidator
+)
+
+from .tool_registry import (
+    ToolRegistry, get_registry, get_all_tools
+)
+
+# Phase 9.2: Verification Pipeline
+from .expression_parser import (
+    parse_expression, ExpressionParser, ExpressionTokenizer,
+    ExpressionValidator, ParsedExpression, FunctionCall
+)
+
+from .verifier import (
+    VerificationPipeline, VerificationReport,
+    ExpressionExtractor, StageExecutor, StageComparator,
+    verify_llm_statement, get_verifier
+)
+
+# Phase 9.3: Formula Validator
+from .formula_validator import (
+    FormulaValidator, ValidationResult, FormulaError,
+    DimensionValidator, validate_formula, ErrorType
+)
+
+# Phase 9.4: Trace & Proof Generation
+from .trace_generator import (
+    ComputationTracer, ComputationTrace, ProofTree, ProofStep,
+    ExplainabilityReporter, trace_and_explain
+)
+
+# Phase 9.1: Agent Protocol
+from .agent_interface import (
+    VectorQuantTool,
+    ComputationResult,
+    ComputationMetadata,
+    ParameterValidator,
+)
+
+from .tool_registry import (
+    ToolRegistry,
+    get_registry,
+    get_all_tools,
+    get_tool_schema,
+    execute_tool as registry_execute_tool,
+    list_tools_full,
+    search_tools,
+)

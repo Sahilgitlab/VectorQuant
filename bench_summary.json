@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-03-16T10:15:31.833916",
+  "system": {
+    "numpy": true,
+    "scipy": true,
+    "quantlib": true
+  },
+  "benchmarks": {
+    "statistics": {
+      "vectorquant": {
+        "mean": 49.9995,
+        "std_dev": 28.867657796687745,
+        "variance": 833.3416666666667,
+        "time_ms": 15.064477920532227
+      },
+      "numpy": {
+        "mean": 49.9995,
+        "std_dev": 28.867513458037912,
+        "variance": 833.33333325,
+        "time_ms": 0.5524158477783203,
+        "speedup_vs_vq": 0.036670095750573714
+      }
+    },
+    "optimization": {
+      "vectorquant": {
+        "result": [
+          2.6021413323157403,
+          -1.734760888210494
+        ],
+        "time_ms": 0.11014938354492188
+      },
+      "scipy": {
+        "result": [
+          3.0,
+          -2.0
+        ],
+        "time_ms": 0.5471706390380859,
+        "speedup_vs_vq": 4.967532467532467
+      }
+    },
+    "derivatives": {
+      "vectorquant": {
+        "call_price": 8.021363972427324,
+        "delta": 0.5422283886637945,
+        "gamma": 0.019835261904213263,
+        "vega": 39.67052380842653,
+        "theta": -6.27712612554026,
+        "time_ms": 0.004560947418212891
+      }
+    }
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "timestamp": "2026-03-12T17:30:12.265887",
+  "availability": {
+    "c_backend": true,
+    "numpy": true,
+    "scipy": true,
+    "quantlib": true
+  },
+  "results": {
+    "matrix_multiply": {
+      "vectorquant_c": {
+        "avg_ms": 1.6831333329416036,
+        "min_ms": 1.1264999993727542,
+        "max_ms": 2.738600000157021,
+        "total_runs": 3
+      },
+      "numpy": {
+        "avg_ms": 0.19923333456972614,
+        "min_ms": 0.16600000162725337,
+        "max_ms": 0.2610000010463409,
+        "total_runs": 3
+      },
+      "scipy_blas": {
+        "avg_ms": 0.20086666700080968,
+        "min_ms": 0.15440000061062165,
+        "max_ms": 0.2612999996927101,
+        "total_runs": 3
+      }
+    },
+    "lu_decomposition": {
+      "vectorquant_c": {
+        "avg_ms": 0.4002666658683059,
+        "min_ms": 0.3679000001284294,
+        "max_ms": 0.42969999776687473,
+        "total_runs": 3
+      },
+      "numpy_scipy": {
+        "avg_ms": 0.23616666658199392,
+        "min_ms": 0.13670000043930486,
+        "max_ms": 0.40219999937107787,
+        "total_runs": 3
+      }
+    },
+    "qr_decomposition": {
+      "vectorquant_c": {
+        "avg_ms": 1.0469000008015428,
+        "min_ms": 0.9838000005402137,
+        "max_ms": 1.1068999992858153,
+        "total_runs": 3
+      },
+      "numpy_scipy": {
+        "avg_ms": 2.28643333321088,
+        "min_ms": 2.1428000000014435,
+        "max_ms": 2.4349999985133763,
+        "total_runs": 3
+      }
+    },
+    "cholesky_decomposition": {
+      "vectorquant_c": {
+        "avg_ms": 0.22073333335962766,
+        "min_ms": 0.17519999892101623,
+        "max_ms": 0.30590000096708536,
+        "total_runs": 3
+      },
+      "numpy_scipy": {
+        "avg_ms": 0.08663333452811155,
+        "min_ms": 0.03930000093532726,
+        "max_ms": 0.1678000007814262,
+        "total_runs": 3
+      }
+    },
+    "svd": {
+      "vectorquant_c": {
+        "avg_ms": 22519.63323333378,
+        "min_ms": 17222.92799999923,
+        "max_ms": 26545.763400001306,
+        "total_runs": 3
+      },
+      "numpy_scipy": {
+        "avg_ms": 15.890166666698253,
+        "min_ms": 14.790500001254259,
+        "max_ms": 17.0789000003424,
+        "total_runs": 3
+      }
+    },
+    "eigendecomposition": {
+      "vectorquant_c": {
+        "avg_ms": 96.95930000088993,
+        "min_ms": 96.47540000150912,
+        "max_ms": 97.63780000139377,
+        "total_runs": 3
+      },
+      "numpy": {
+        "avg_ms": 0.5829666661156807,
+        "min_ms": 0.40439999793306924,
+        "max_ms": 0.840000000607688,
+        "total_runs": 3
+      },
+      "scipy": {
+        "avg_ms": 0.3276999984033561,
+        "min_ms": 0.24769999799900688,
+        "max_ms": 0.45419999878504314,
+        "total_runs": 3
+      }
+    },
+    "covariance": {
+      "vectorquant_c": {
+        "avg_ms": 2.774199999597234,
+        "min_ms": 2.693499998713378,
+        "max_ms": 2.8542000000015832,
+        "total_runs": 3
+      },
+      "numpy": {
+        "avg_ms": 6.59280000157499,
+        "min_ms": 1.1701000003085937,
+        "max_ms": 17.237200001545716,
+        "total_runs": 3
+      }
+    },
+    "ols_regression": {
+      "vectorquant_c": {
+        "avg_ms": 0.006700001298061882,
+        "min_ms": 0.0012999989849049598,
+        "max_ms": 0.015600002370774746,
+        "total_runs": 3
+      },
+      "scipy": {
+        "avg_ms": 3.1026666668670564,
+        "min_ms": 2.8496999984781723,
+        "max_ms": 3.3125000009022187,
+        "total_runs": 3
+      }
+    },
+    "gbm_monte_carlo": {
+      "vectorquant_c": {
+        "avg_ms": 369.20330000066315,
+        "min_ms": 346.61920000144164,
+        "max_ms": 396.10849999735365,
+        "total_runs": 3
+      },
+      "numpy": {
+        "avg_ms": 307.80543333336635,
+        "min_ms": 303.225100000418,
+        "max_ms": 314.2815999999584,
+        "total_runs": 3
+      }
+    },
+    "fft": {
+      "vectorquant_c": {
+        "avg_ms": 0.03440000000409782,
+        "min_ms": 0.02769999991869554,
+        "max_ms": 0.0413999987358693,
+        "total_runs": 3
+      },
+      "numpy": {
+        "avg_ms": 0.05856666757608764,
+        "min_ms": 0.014900000678608194,
+        "max_ms": 0.13860000035492703,
+        "total_runs": 3
+      },
+      "scipy": {
+        "avg_ms": 0.11239999973137553,
+        "min_ms": 0.011200001608813182,
+        "max_ms": 0.2598999999463558,
+        "total_runs": 3
+      }
+    },
+    "bfgs": {
+      "scipy": {
+        "avg_ms": 0.8449333339134076,
+        "min_ms": 0.37349999911384657,
+        "max_ms": 1.4620000001741573,
+        "total_runs": 3
+      }
+    }
+  }
+}

@@ -9,7 +9,18 @@ VectorQuant aims to be zero-dependency by default.
 import functools
 import logging
 
+import logging
+
 logger = logging.getLogger(__name__)
+
+# --- C BACKEND DETECTION ---
+C_AVAILABLE = False
+try:
+    import vectorquant_c_core
+    C_AVAILABLE = True
+except ImportError:
+    pass
+
 
 NUMBA_AVAILABLE = False
 try:

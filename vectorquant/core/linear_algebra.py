@@ -1,4 +1,5 @@
 import math
+import cmath
 
 def zeros(rows, cols=None):
     if cols is None:
@@ -46,27 +47,33 @@ def transpose(A):
 
 def lu_decomposition(A):
     n = len(A)
-    L = zeros(n, n)
-    U = zeros(n, n)
-    
+    L = [[0.0] * n for _ in range(n)]
+    U = [[0.0] * n for _ in range(n)]
     for i in range(n):
-        # Upper Triangular
         for k in range(i, n):
-            s = sum(L[i][j] * U[j][k] for j in range(i))
-            U[i][k] = A[i][k] - s
-            
-        # Lower Triangular
+            sum_val = sum(L[i][j] * U[j][k] for j in range(i))
+            U[i][k] = A[i][k] - sum_val
         for k in range(i, n):
             if i == k:
                 L[i][i] = 1.0
             else:
-                s = sum(L[k][j] * U[j][i] for j in range(i))
-                U_ii = U[i][i]
-                if abs(U_ii) < 1e-10:
-                    U_ii = 1e-10  # Prevent exact division by zero
-                L[k][i] = (A[k][i] - s) / U_ii
-                
+                sum_val = sum(L[k][j] * U[j][i] for j in range(i))
+                L[k][i] = (A[k][i] - sum_val) / U[i][i]
     return L, U
+
+def cholesky_decomposition(A):
+    n = len(A)
+    L = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(i + 1):
+            sum_val = sum(L[i][k] * L[j][k] for k in range(j))
+            if i == j:
+                val = A[i][i] - sum_val
+                if val < 0: raise ValueError("Matrix is not positive-definite")
+                L[i][j] = math.sqrt(val)
+            else:
+                L[i][j] = (1.0 / L[j][j] * (A[i][j] - sum_val))
+    return L
 
 def solve_lu(L, U, b):
     n = len(L)
@@ -106,53 +113,32 @@ def determinant(A):
         det *= U[i][i]
     return det
 
-def cholesky_decomposition(A):
-    n = len(A)
-    L = zeros(n, n)
-    for i in range(n):
-        for j in range(i + 1):
-            s = sum(L[i][k] * L[j][k] for k in range(j))
-            if i == j:
-                val = A[i][i] - s
-                L[i][j] = math.sqrt(max(val, 0.0))  # Max to handle small numerical negative zeros
-            else:
-                L_jj = L[j][j] if L[j][j] > 1e-10 else 1e-10
-                L[i][j] = (A[i][j] - s) / L_jj
-    return L
-
 def trace(A):
     return sum(A[i][i] for i in range(min(len(A), len(A[0]))))
 
 def qr_decomposition(A):
-    # Gram-Schmidt Process
     n = len(A)
     m = len(A[0])
-    Q = zeros(n, m)
+    Q = [row[:] for row in A]
     R = zeros(m, m)
     
-    A_t = transpose(A)
-    u_vecs = []
-    
-    for j in range(m):
-        v = A_t[j]
-        u = list(v)
-        for i in range(j):
-            R[i][j] = dot(Q_t[i], v)
-            u = [u[k] - R[i][j] * Q_t[i][k] for k in range(n)]
-            
-        norm_u = vector_norm(u)
-        R[j][j] = norm_u
-        if norm_u > 1e-10:
-            q = [u[k] / norm_u for k in range(n)]
-        else:
-            q = [0.0] * n
-            
-        for i in range(n):
-            Q[i][j] = q[i]
-            
-        u_vecs.append(q)
-        Q_t = u_vecs
+    for k in range(m):
+        # Extract column k
+        col_k = [Q[i][k] for i in range(n)]
+        norm = math.sqrt(sum(x*x for x in col_k))
+        R[k][k] = norm
         
+        if norm > 1e-12:
+            for i in range(n):
+                Q[i][k] /= norm
+            
+        for j in range(k + 1, m):
+            # dot product of Q[:,k] and Q[:,j]
+            dot_val = sum(Q[i][k] * Q[i][j] for i in range(n))
+            R[k][j] = dot_val
+            for i in range(n):
+                Q[i][j] -= dot_val * Q[i][k]
+                
     return Q, R
 
 def eigen_decomposition(A, num_simulations=100):
@@ -214,3 +200,15 @@ def svd(A):
         U.append(u)
         
     return transpose(U), singular_values, V_sorted # Return U, Sigma_diag, V^T
+
+def radix2_fft(x):
+    n = len(x)
+    if n <= 1:
+        return x
+    
+    even = radix2_fft(x[0::2])
+    odd = radix2_fft(x[1::2])
+    
+    T = [cmath.exp(-2j * math.pi * k / n) * odd[k] for k in range(n // 2)]
+    return [even[k] + T[k] for k in range(n // 2)] + \
+           [even[k] - T[k] for k in range(n // 2)]

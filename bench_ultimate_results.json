@@ -1,0 +1,45 @@
+{
+    "Stage 1: Math": {
+        "Matrix Mul (100x100)": {
+            "VectorQuant": 0.5893300010939129,
+            "NumPy": 0.09156999876722693,
+            "Unit": "ms"
+        },
+        "SVD (100x100)": {
+            "VectorQuant": 21968.031219998375,
+            "SciPy": 7.669059999170713,
+            "Unit": "ms"
+        }
+    },
+    "Stage 2: Finance": {
+        "Parametric VaR (Real SPY Data)": {
+            "VectorQuant": 0.0032116000074893236,
+            "NumPy": 0.02537540000048466,
+            "Unit": "ms"
+        },
+        "Black-Scholes Put": {
+            "VectorQuant": 0.001367799995932728,
+            "QuantLib": 0.20808000001125038,
+            "Unit": "ms"
+        }
+    },
+    "Stage 3: Stochastic": {
+        "GBM Path Gen (10k paths)": {
+            "VectorQuant": 90.09803999797441,
+            "NumPy": 64.40445999905933,
+            "Unit": "ms"
+        }
+    },
+    "Stage 4: AI Verification": {
+        "VaR Proof Trace Gen": {
+            "VectorQuant": 0.018149999959859997,
+            "Baseline": 0.0,
+            "Unit": "ms"
+        },
+        "Hallucination Check": {
+            "VectorQuant": 0.00709100000676699,
+            "Baseline": 0.0,
+            "Unit": "ms"
+        }
+    }
+}
