@@ -31,6 +31,10 @@ classifiers = [
 # Zero external dependencies — pure Python math kernel
 dependencies = []
 
+[project.urls]
+Documentation = "https://doc-vector-quant.vercel.app/"
+Repository = "https://github.com/Sahilgitlab/VectorQuant"
+
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "pytest-cov"]
 perf = ["numba>=0.58"]
