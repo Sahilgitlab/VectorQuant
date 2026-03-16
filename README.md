@@ -4,6 +4,8 @@
 
 *Created by Sahil Gupta*
 
+**[Documentation](https://doc-vector-quant.vercel.app/)** | **[Repository](https://github.com/Sahilgitlab/VectorQuant)**
+
 Zero-dependency · Pure Python · Numba JIT · GPU Accelerated · LLM-Ready
 
 ---
