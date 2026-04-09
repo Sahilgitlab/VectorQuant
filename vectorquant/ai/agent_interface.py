@@ -403,6 +403,11 @@ class VectorQuantTool:
             # Execute
             result_value = func(**adapted_params)
             
+            # Unwrap VQResult to raw value for agent protocol compatibility
+            from vectorquant.core.result import VQResult as _VQResult
+            if isinstance(result_value, _VQResult):
+                result_value = result_value.value
+            
             # Verification (optional)
             if verify:
                 metadata.verified = self._attempt_verification(operation, validated_params, result_value)

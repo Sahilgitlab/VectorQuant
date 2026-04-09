@@ -130,7 +130,12 @@ def execute_tool(tool_name, **params):
         )
 
     func = registry[tool_name]["function"]
-    return func(**params)
+    result = func(**params)
+    
+    from vectorquant.core.result import VQResult as _VQResult
+    if isinstance(result, _VQResult):
+        return result.value
+    return result
 
 
 def get_tool_schemas():

@@ -16,7 +16,7 @@ import vectorquant as vq
 
 def test_version():
     assert hasattr(vq, "__version__")
-    assert vq.__version__ == "0.5.1"
+    assert vq.__version__ == "0.5.2"
 
 
 def test_linalg_namespace():
@@ -71,20 +71,23 @@ def test_derivatives_namespace():
     assert callable(vq.derivatives.bs_delta)
 
 
-def test_research_namespace():
-    assert hasattr(vq, "research")
-    assert callable(vq.research.probabilistic_sharpe_ratio)
-
-
 def test_ai_namespace():
     assert hasattr(vq, "ai")
-    assert callable(vq.ai.score_strategy)
-    assert callable(vq.ai.explain_decision)
+    # v0.6 hallucination detection
+    assert callable(vq.ai.verify_numeric)
+    assert callable(vq.ai.check_expression)
+    assert callable(vq.ai.check_formula)
+    assert hasattr(vq.ai, "conventions")
+    assert hasattr(vq.ai, "unit_checker")
+    assert hasattr(vq.ai, "formula_registry")
 
 
-def test_infra_namespace():
-    assert hasattr(vq, "infra")
-    assert callable(vq.infra.forward_fill_missing)
+def test_distributions_namespace():
+    assert hasattr(vq, "distributions")
+    from vectorquant.distributions import StudentT, GPD, Normal
+    assert callable(StudentT)
+    assert callable(GPD)
+    assert callable(Normal)
 
 
 

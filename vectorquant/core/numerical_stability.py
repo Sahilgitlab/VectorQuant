@@ -3,7 +3,6 @@ Numerical Stability Safeguards and Covariance Extensions
 """
 import math
 from .linear_algebra import matrix_multiply, transpose, identity, svd, matrix_inverse, eigen_decomposition
-from .statistics import covariance_matrix
 
 def condition_number(A):
     """

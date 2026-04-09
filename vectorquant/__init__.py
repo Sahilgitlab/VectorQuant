@@ -1,16 +1,20 @@
 """
-VectorQuant — High-Performance Quantitative Finance Engine for Python
-=====================================================================
+VectorQuant — Verified Quantitative Finance for AI Agents
+==========================================================
 
-Ultra-fast quantitative finance research engine combining mathematical
-kernel, financial modeling, research pipelines, and AI strategy discovery.
+The mathematical ground-truth layer for AI agents operating in quantitative
+finance. Catches LLM hallucinations in four failure modes: wrong formula,
+wrong convention, wrong units, and wrong distribution.
 
 Usage::
 
     import vectorquant as vq
 
-    # Statistics
-    returns = vq.stats.mean(data)
+    # AI Verification (core purpose)
+    result = vq.ai.verify_numeric("sharpe_ratio", llm_value=2.45,
+                                   inputs={"returns": [...], "risk_free_rate": 0.02/252})
+    result = vq.ai.conventions.lookup("treasury_bill", "USD")
+    result = vq.ai.unit_checker.check(0.003, "sharpe_ratio")
 
     # Risk
     var = vq.risk.parametric_var(returns)
@@ -18,40 +22,39 @@ Usage::
     # Portfolio
     weights = vq.portfolio.optimize_max_sharpe(expected_returns, cov)
 
-    # Stochastic simulation
-    paths = vq.stochastic.simulate_geometric_brownian_motion(
-        S0=100, mu=0.05, sigma=0.2, T=1.0, dt=1/252, n_paths=10000
-    )
-
-    # Time series
-    regime = vq.timeseries.viterbi_algorithm_hmm(obs, probs, trans, emission)
-
     # Derivatives
     price = vq.derivatives.black_scholes_call(S=100, K=100, r=0.05, sigma=0.2, T=1.0)
+
+    # Distributions
+    t = vq.distributions.StudentT(df=5)
+    t.var(confidence=0.99)
 """
 
 from ._version import __version__
 
-# ─── Layer Aliases ───────────────────────────────────────────────────────────
+# ─── Core math layer ─────────────────────────────────────────────────────────
 
 from .core import linear_algebra as linalg
 from .core import statistics as stats
 from .core import probability as prob
 from .core import optimization as optim
 
+# ─── Finance layer ───────────────────────────────────────────────────────────
+
 from . import stochastic
 from . import time_series as timeseries
 from .finance import portfolio
 from .finance import risk_models as risk
 from .finance import derivatives
-from . import research
+
+# ─── AI verification layer ───────────────────────────────────────────────────
+
 from . import ai
-from . import infrastructure as infra
+from . import distributions
 
 # ─── Convenience re-exports ─────────────────────────────────────────────────
 
 from .finance import (
-    RiskMonitor,
     black_scholes_call, black_scholes_put,
     historical_var, parametric_var, cvar,
     optimize_max_sharpe, black_litterman_returns,
@@ -70,7 +73,6 @@ __all__ = [
     "portfolio",
     "risk",
     "derivatives",
-    "research",
     "ai",
-    "infra",
+    "distributions",
 ]

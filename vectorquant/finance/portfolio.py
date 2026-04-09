@@ -3,12 +3,21 @@ Portfolio Theory
 """
 import math
 from vectorquant.core.linear_algebra import dot, matrix_multiply, transpose
+from vectorquant.core.result import VQResult, ProofStep
 
 def portfolio_return(weights, expected_returns):
     """
     R_p = w^T * E[R]
     """
-    return dot(weights, expected_returns)
+    ret = dot(weights, expected_returns)
+    return VQResult(
+        value=ret,
+        formula_used="Portfolio Return (w^T E[R])",
+        proof_trace=[
+            ProofStep("Return", "w^T * ExpectedReturns", r"w^T E[R]", str(ret), "Basic dot product")
+        ],
+        citation="Markowitz, H. (1952). Portfolio Selection."
+    )
 
 def portfolio_variance(weights, cov_matrix):
     """
@@ -18,10 +27,27 @@ def portfolio_variance(weights, cov_matrix):
     w_t = transpose(w_matrix)
     temp = matrix_multiply(w_t, cov_matrix)
     var = matrix_multiply(temp, w_matrix)[0][0]
-    return max(var, 0.0)
+    final_var = max(var, 0.0)
+    return VQResult(
+        value=final_var,
+        formula_used="Portfolio Variance (w^T Cov w)",
+        proof_trace=[
+            ProofStep("Variance", "w^T * Covariance * w", r"w^T \Sigma w", str(final_var), "Quadratic form")
+        ],
+        citation="Markowitz, H. (1952). Portfolio Selection."
+    )
 
 def portfolio_volatility(weights, cov_matrix):
-    return math.sqrt(portfolio_variance(weights, cov_matrix))
+    var_result = portfolio_variance(weights, cov_matrix)
+    vol = math.sqrt(var_result.value)
+    return VQResult(
+        value=vol,
+        formula_used="Portfolio Volatility (sqrt(Variance))",
+        proof_trace=var_result.proof_trace + [
+            ProofStep("Volatility", "sqrt(Variance)", r"\sqrt{\sigma^2_p}", str(vol), "Standard deviation")
+        ],
+        citation="Markowitz, H. (1952). Portfolio Selection."
+    )
 
 def optimize_max_sharpe(expected_returns, cov_matrix, risk_free_rate=0.0, max_iter=1000, lr=0.01):
     """
@@ -35,8 +61,8 @@ def optimize_max_sharpe(expected_returns, cov_matrix, risk_free_rate=0.0, max_it
     
     for _ in range(max_iter):
         # Calculate current obj
-        p_ret = portfolio_return(w, expected_returns)
-        p_var = portfolio_variance(w, cov_matrix)
+        p_ret = portfolio_return(w, expected_returns).value
+        p_var = portfolio_variance(w, cov_matrix).value
         p_vol = math.sqrt(p_var)
         
         if p_vol < 1e-8:
@@ -50,8 +76,8 @@ def optimize_max_sharpe(expected_returns, cov_matrix, risk_free_rate=0.0, max_it
         for i in range(n):
             w_h = list(w)
             w_h[i] += h
-            p_ret_h = portfolio_return(w_h, expected_returns)
-            p_vol_h = math.sqrt(portfolio_variance(w_h, cov_matrix))
+            p_ret_h = portfolio_return(w_h, expected_returns).value
+            p_vol_h = math.sqrt(portfolio_variance(w_h, cov_matrix).value)
             sharpe_h = (p_ret_h - risk_free_rate) / p_vol_h if p_vol_h > 1e-8 else 0.0
             grad.append((sharpe_h - sharpe) / h)
             
@@ -68,7 +94,14 @@ def optimize_max_sharpe(expected_returns, cov_matrix, risk_free_rate=0.0, max_it
         else:
             w = [1.0 / n] * n # Reset if weights collapse
             
-    return w
+    return VQResult(
+        value=w,
+        formula_used="Maximize Sharpe Ratio (Gradient Descent)",
+        proof_trace=[
+            ProofStep("Optimization", f"{max_iter} iterations, lr={lr}", r"\max \text{Sharpe}", str(w), "Approximate Gradient Descent")
+        ],
+        citation="Sharpe, W. F. (1966). Mutual Fund Performance."
+    )
 
 def black_litterman_returns(pi, cov_matrix, P, Q, tau=0.05, omega=None):
     """
@@ -77,7 +110,6 @@ def black_litterman_returns(pi, cov_matrix, P, Q, tau=0.05, omega=None):
     Q: Vector of expected view returns
     tau: scalar
     omega: Covariance matrix of views (if None, inferred proportional to P * cov * P^T)
-    mu = [(tau * Cov)^-1 + P^T * Omega^-1 * P]^-1 * [(tau * Cov)^-1 * pi + P^T * Omega^-1 * Q]
     """
     from vectorquant.core.linear_algebra import matrix_inverse, matrix_add, matrix_scale, pseudoinverse
     n = len(pi)
@@ -116,4 +148,15 @@ def black_litterman_returns(pi, cov_matrix, P, Q, tau=0.05, omega=None):
     
     # Final mu
     mu_mat = matrix_multiply(part1, part2)
-    return [x[0] for x in mu_mat]
+    mu_result = [x[0] for x in mu_mat]
+    
+    return VQResult(
+        value=mu_result,
+        formula_used="Black-Litterman Expected Returns",
+        proof_trace=[
+            ProofStep("Pi", "Equilibrium Returns", r"\Pi", str(pi), ""),
+            ProofStep("Views", "P and Q", r"P, Q", "", f"{len(Q)} views specified"),
+            ProofStep("Mu", "Posterior Mean", r"\mu", str(mu_result), "Calculated using analytical BL formula")
+        ],
+        citation="Black, F., & Litterman, R. (1992). Global Portfolio Optimization."
+    )

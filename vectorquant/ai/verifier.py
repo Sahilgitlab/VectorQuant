@@ -253,6 +253,11 @@ class StageExecutor:
             # Execute with parameters
             value = func(**parameters)
             
+            # Unwrap VQResult
+            from vectorquant.core.result import VQResult as _VQResult
+            if isinstance(value, _VQResult):
+                value = value.value
+            
             end_time = time.perf_counter()
             result.computed_value = float(value) if value is not None else None
             result.latency_ms = (end_time - start_time) * 1000

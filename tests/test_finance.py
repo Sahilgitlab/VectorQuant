@@ -34,7 +34,8 @@ def test_optimize_max_sharpe_weights_sum_to_one():
     cov = [[0.04, 0.006, 0.002],
            [0.006, 0.025, 0.004],
            [0.002, 0.004, 0.01]]
-    weights = vq.portfolio.optimize_max_sharpe(expected_returns, cov)
+    weights_result = vq.portfolio.optimize_max_sharpe(expected_returns, cov)
+    weights = weights_result.value
     assert abs(sum(weights) - 1.0) < 1e-6
     assert all(w >= 0 for w in weights)
 
@@ -122,22 +123,40 @@ def test_ema():
     assert len(result) == 3  # Only from position n-1 onward
 
 
-# ─── AI Layer ────────────────────────────────────────────────────────────────
+# ─── AI Verification Layer ───────────────────────────────────────────────────
 
-def test_score_strategy():
-    score = vq.ai.score_strategy(sharpe=1.5, stability_prob=0.9, liquidity_score=1.0)
-    assert abs(score - 1.35) < 1e-8
+def test_verify_numeric_sharpe_hallucination():
+    result = vq.ai.verify_numeric(
+        "sharpe_ratio",
+        llm_value=2.45,
+        inputs={"returns": [0.01, -0.02, 0.015, 0.02, -0.005],
+                "risk_free_rate": 0.02 / 252}
+    )
+    assert result.verified == False
+    assert result.failure_mode == "formula"
 
 
-def test_score_strategy_negative_sharpe():
-    score = vq.ai.score_strategy(sharpe=-0.5, stability_prob=0.9, liquidity_score=1.0)
-    assert score == 0.0
+def test_verify_numeric_sharpe_correct():
+    inputs = {"returns": [0.01, -0.02, 0.015, 0.02, -0.005],
+              "risk_free_rate": 0.02 / 252}
+    correct = vq.ai.verify_numeric("sharpe_ratio", llm_value=0.0, inputs=inputs)
+    result = vq.ai.verify_numeric("sharpe_ratio",
+                                   llm_value=correct.value, inputs=inputs)
+    assert result.verified == True
 
 
-def test_strategy_lifecycle():
-    sl = vq.ai.StrategyLifecycle("S001", "TestStrategy")
-    assert sl.state == vq.ai.LifecycleState.RESEARCH
-    sl.evaluate_promotion(sharpe_ratio=1.5, periods_active=100, max_drawdown=0.10)
-    assert sl.state == vq.ai.LifecycleState.PAPER_TRADING
+def test_convention_lookup():
+    conv = vq.ai.conventions.lookup("treasury_bill", "USD")
+    assert conv["day_count"] == "Act/360"
+    assert conv["quote_type"] == "discount_rate"
+
+
+def test_unit_checker_catches_scale_error():
+    result = vq.ai.unit_checker.check(
+        value=0.003,
+        formula="sharpe_ratio",
+        question="What is the annualised Sharpe ratio?"
+    )
+    assert result.verified == False
 
 

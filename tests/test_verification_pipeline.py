@@ -161,10 +161,11 @@ class TestExpressionParsing:
         assert isinstance(result, str)  # Error message
     
     def test_parse_unknown_operation(self):
-        """Reject unknown operations."""
+        """Allow unknown operations so FormulaValidator can handle them."""
         success, result = parse_expression("unknown_operation(data)")
         
-        assert not success
+        assert success
+        assert "unknown_operation" in result.operations
 
 
 # ─── Stage 3: Execution Tests ────────────────────────────────────────────

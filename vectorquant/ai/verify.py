@@ -180,6 +180,10 @@ def verify_finance_formula(formula_name, params, expected, tolerance=1e-4):
                 details=f"Unknown formula: {formula_name}"
             )
 
+        from vectorquant.core.result import VQResult as _VQResult
+        if isinstance(computed, _VQResult):
+            computed = computed.value
+
         diff = abs(computed - expected)
         verified = diff <= tolerance
         confidence = 1.0 if verified else max(0.0, 1.0 - diff / (abs(expected) + 1e-12))

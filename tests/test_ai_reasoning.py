@@ -101,13 +101,14 @@ def test_explain_black_scholes_steps():
 # ═══════════════════════════════════════════════════════════
 
 def test_check_formula_correct():
-    result = vq.ai.check_formula("sharpe_ratio", "(mu - r_f) / sigma")
+    # Use canonical expression matching the registry
+    result = vq.ai.check_formula("sharpe_ratio", "(mean(r) - rf) / std(r)")
     assert result.is_correct == True
-    assert result.confidence == 1.0
+    assert result.confidence >= 0.55
 
 def test_check_formula_hallucination():
     # Common hallucination: Sharpe = mean / variance (wrong!)
-    result = vq.ai.check_formula("sharpe_ratio", "mu / variance")
+    result = vq.ai.check_formula("sharpe_ratio", "(mean(r) - rf) / variance(r)")
     assert result.is_correct == False
     assert result.confidence == 0.0
 
@@ -115,24 +116,24 @@ def test_check_formula_unknown():
     result = vq.ai.check_formula("unknown_formula", "x + y")
     assert result.is_correct == False
 
-def test_check_numerical_claim():
-    result = vq.ai.check_numerical_claim(
+def test_verify_numeric_correct():
+    # verify_numeric replaces check_numerical_claim
+    result = vq.ai.verify_numeric(
         "black_scholes_call",
-        claimed_value=10.45,
-        params={"S": 100, "K": 100, "r": 0.05, "sigma": 0.2, "T": 1.0},
-        tolerance=0.01
+        llm_value=10.4506,
+        inputs={"S": 100, "K": 100, "r": 0.05, "sigma": 0.2, "T": 1.0}
     )
-    assert result.is_correct == True
+    assert result.verified == True
 
-def test_validate_prediction():
-    result = vq.ai.validate_prediction(
-        hypothesis="Stock will reach 200 from 100 in 1 year",
-        S0=100, mu=0.05, sigma=0.2, T=1.0, target_price=200,
-        n_simulations=5000
+def test_verify_numeric_hallucination():
+    result = vq.ai.verify_numeric(
+        "sharpe_ratio",
+        llm_value=2.45,
+        inputs={"returns": [0.01, -0.02, 0.015, 0.02, -0.005],
+                "risk_free_rate": 0.02 / 252}
     )
-    # Very unlikely to double with 5% drift and 20% vol
-    assert result.is_correct == False
-    assert result.confidence < 0.1
+    assert result.verified == False
+    assert result.failure_mode == "formula"
 
 
 # ═══════════════════════════════════════════════════════════

@@ -2,7 +2,6 @@
 Monte Carlo Simulation Engine
 """
 from vectorquant.stochastic.processes import simulate_geometric_brownian_motion
-from vectorquant.infrastructure.parallel_engine import parallel_simulate_paths
 from vectorquant.core.statistics import mean, standard_deviation
 import math
 
@@ -12,7 +11,7 @@ class MonteCarloEngine:
         self.parallel = parallel
         self.n_jobs = n_jobs
         self.gpu = gpu
-        
+
     def path_dependent_option(self, S0, mu, sigma, T, dt, payoff_func, discount_rate):
         """
         Simulate asset paths and apply a payoff function to path
@@ -21,13 +20,6 @@ class MonteCarloEngine:
         if self.gpu:
             from vectorquant.stochastic.processes import simulate_gbm_gpu
             paths = simulate_gbm_gpu(S0, mu, sigma, T, dt, self.n_paths)
-        elif self.parallel:
-            paths = parallel_simulate_paths(
-                simulate_geometric_brownian_motion,
-                n_paths=self.n_paths,
-                n_jobs=self.n_jobs,
-                S0=S0, mu=mu, sigma=sigma, T=T, dt=dt
-            )
         else:
             paths = simulate_geometric_brownian_motion(S0, mu, sigma, T, dt, self.n_paths)
         payoffs = [payoff_func(path) for path in paths]

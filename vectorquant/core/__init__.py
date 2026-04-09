@@ -35,3 +35,5 @@ from .optimization import (
 from .numerical_stability import (
     condition_number, nearest_positive_definite,
 )
+
+from .result import VQResult, ProofStep, UnitCheckResult
